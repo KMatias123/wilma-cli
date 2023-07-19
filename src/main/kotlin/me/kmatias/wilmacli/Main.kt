@@ -1,13 +1,15 @@
 package me.kmatias.wilmacli
 
+import org.openwilma.kotlin.OpenWilma
 import org.openwilma.kotlin.classes.WilmaServer
-import org.openwilma.kotlin.classes.WilmaSession
 
 class Main {
 
     companion object {
         lateinit var wilmaServer: WilmaServer
-        lateinit var wilmaSession: WilmaSession
+        val wilmaClient = OpenWilma()
+        var loggedIn = false
+
         var commandManager = CommandManager()
 
         var quitting = false
@@ -23,7 +25,7 @@ class Main {
 
                     val split = input.split(" ")
 
-                    if (split[0].isNotEmpty() && !commandManager.runCommand(split[0], split.drop(1).toTypedArray())) {
+                    if (split[0].isNotEmpty() && commandManager.runCommand(split[0], split.drop(1).toTypedArray())) {
                         println("Invalid command. Try \"help\" for help.")
                     }
                 }
@@ -33,8 +35,8 @@ class Main {
                     """
             
             
-            EOF was reached? Please create an issue
-        """.trimIndent()
+                    EOF was reached? Please create an issue
+                """.trimIndent()
                 )
             }
         }

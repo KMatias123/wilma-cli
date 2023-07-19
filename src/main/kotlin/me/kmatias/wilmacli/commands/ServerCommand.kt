@@ -3,19 +3,11 @@ package me.kmatias.wilmacli.commands
 import kotlinx.coroutines.runBlocking
 import me.kmatias.wilmacli.Command
 import me.kmatias.wilmacli.Main
-import org.openwilma.kotlin.OpenWilma
 import org.openwilma.kotlin.classes.WilmaServer
 
-class ServerCommand: Command("Server", arrayOf("login", "l", "s")) {
-    override fun exec(args: Array<String>) {
+class ServerCommand : Command("Server", arrayOf("login", "l", "s")) {
+    override fun exec(args: Array<String>): Boolean {
 
-        args.forEach {
-
-            println(it)
-
-        }
-
-        var ranCommand = false
 
         if (args.isNotEmpty()) {
             if (args[0].equals("connect", true)) {
@@ -35,22 +27,29 @@ class ServerCommand: Command("Server", arrayOf("login", "l", "s")) {
 
                 println("Logging in...")
                 runBlocking {
-                    Main.wilmaSession = OpenWilma.signInToWilma(Main.wilmaServer, username, password)
+                    Main.wilmaClient.signInToWilma(Main.wilmaServer, username, password)
+                    Main.loggedIn = true
                 }
                 println("Logged in.")
 
-                ranCommand = true
+                return true
             } else if (args[0].equals("disconnect", true)) {
 
-                ranCommand = true
+                return true
             }
         }
 
-        if (!ranCommand) {
-            println("""
-                server <connect> [ip]
-                server <disconnect>
-            """.trimMargin())
-        }
+        return false
+    }
+
+    override fun needsLogin(): Boolean {
+        return false
+    }
+
+    override fun getHelp(): String {
+        return """
+            server <connect> <ip>
+            server <disconnect>
+        """.trimMargin()
     }
 }
